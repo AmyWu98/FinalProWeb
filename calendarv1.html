@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='utf-8' />
+    <!-- 連結檔案 -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.5/index.global.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.5/locales-all.global.min.js'></script>
+    <script src='bootstrap.bundle.min.js / bootstrap.bundle.js'></script>
+
+
+    <!-- 連結CSS -->
+    <link rel="stylesheet" href="style.css">
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendarhost');
+            var calendarhost = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                // 語言
+                locale: 'zh-tw',
+                navLink: true,
+                eventLimit: true,
+                selectable: true,
+                // 依瀏覽器視窗變動
+                handleWindowResize: true,
+                // 顯示現在
+                nowIndicator: true,
+                // 按鈕
+                customButtons: {
+                    myhost: {
+                        text: '發起',
+                        click: function () {
+                            document.getElementById('calendarhost').style.display = 'block';
+                            document.getElementById('calendarjoin').style.display = 'none';
+                            document.getElementById('calendarall').style.display = 'none';
+                        }
+                    },
+                    myjoin: {
+                        text: '報名',
+                        click: function () {
+                            document.getElementById('calendarhost').style.display = 'none';
+                            document.getElementById('calendarjoin').style.display = 'block';
+                            document.getElementById('calendarall').style.display = 'none';
+                        }
+                    },
+                    all: {
+                        text: '全部',
+                        click: function () {
+                            document.getElementById('calendarhost').style.display = 'none';
+                            document.getElementById('calendarjoin').style.display = 'none';
+                            document.getElementById('calendarall').style.display = 'block';
+                        }
+                    }
+                },
+                    //上排選項
+                    headerToolbar: {
+                        left: 'myhost,myjoin,all',
+                        center: 'title',
+                        right: 'prev,next,today,dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    //活動
+
+                    eventColor: "red",
+                    events: [
+                        {
+                            id: "20230412",
+                            title: "testcalender",
+                            labelType: "myhost",
+                            start: '2023-04-09T08:00:00',
+                            end: '2023-04-09T10:00:00',
+                            color: "purple"
+                        },
+                        {
+                            id: "20230408",
+                            title: "testcalender2",
+                            labelType: "myjoin",
+                            start: '2023-04-10T12:00:00',
+                            end: '2023-04-10T14:00:00',
+                            color: "green"
+                        },
+                        {
+                            id: "333",
+                            title: "testcalender3",
+                            labelType: "myjoin",
+                            start: '2023-04-10T22:00:00',
+                            end: '2023-04-11T00:00:00',
+                        },
+                        {
+                            id: "host",
+                            title: "host",
+                            start: '2023-04-14T22:00:00',
+                            extendedProps:{
+                                location:"badminton court",
+                                fee:"100 毎人",
+                                min: '2',
+                                max:'8',
+                                reservation:"已預約",
+                                contact:'0911222333'
+                            },
+                            description:"testhost"
+                        }
+                    ],
+
+                    //活動點擊
+                    // eventClick: function (info) {
+                    //     //網址不導向
+                    //     info.jsEvent.preventDefault();
+                    //     if (info.event.url) {
+                    //         window.open(info.event.url);
+                    //     }
+                    // },
+                    //顯示資料(改用tippy.js)
+                    eventClick: function (info) {
+                    confirm(info.event.title + info.event.start);
+                    //arg.event.remove()//删除事件
+                    }
+            });
+            // 渲染
+            calendarhost.render();
+        });
+            document.addEventListener('DOMContentLoaded', function () {
+            var calendarE2 = document.getElementById('calendarjoin');
+            var calendarjoin = new FullCalendar.Calendar(calendarE2, {
+                initialView: 'dayGridMonth',
+                // 語言
+                locale: 'zh-tw',
+                navLink: true,
+                eventLimit: true,
+                selectable: true,
+                // 依瀏覽器視窗變動
+                handleWindowResize: true,
+                // 顯示現在
+                nowIndicator: true,
+                // 按鈕
+                customButtons: {
+                    myhost: {
+                        text: '發起',
+                        click: function () {
+                            document.getElementById('calendarhost').style.display = 'block';
+                            document.getElementById('calendarjoin').style.display = 'none';
+                            document.getElementById('calendarall').style.display = 'none';
+                        }
+                    },
+                    myjoin: {
+                        text: '報名',
+                        click: function () {
+                            document.getElementById('calendarhost').style.display = 'none';
+                            document.getElementById('calendarjoin').style.display = 'block';
+                            document.getElementById('calendarall').style.display = 'none';
+                        }
+                    },
+                    all: {
+                        text: '全部',
+                        click: function () {
+                            document.getElementById('calendarhost').style.display = 'none';
+                            document.getElementById('calendarjoin').style.display = 'none';
+                            document.getElementById('calendarall').style.display = 'block';
+                        }
+                    }
+                },
+                //上排選項
+                headerToolbar: {
+                    left: 'myhost,myjoin,all',
+                    center: 'title',
+                    right: 'prev,next,today,dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                //活動
+
+                eventColor: "red",
+                events: [
+                    {
+                        id: "20230412",
+                        title: "testcalender",
+                        labelType: "myhost",
+                        start: '2023-04-09T08:00:00',
+                        end: '2023-04-09T10:00:00',
+                        color: "purple"
+                    },
+                    {
+                        id: "20230408",
+                        title: "testcalender2",
+                        labelType: "myjoin",
+                        start: '2023-04-10T12:00:00',
+                        end: '2023-04-10T14:00:00',
+                        color: "green"
+                    },
+                    {
+                        id: "333",
+                        title: "testcalender3",
+                        labelType: "myjoin",
+                        start: '2023-04-10T22:00:00',
+                        end: '2023-04-11T00:00:00',
+                    },
+                    {
+                        id: "join",
+                        title: "join",
+                        labelType: "myjoin",
+                        start: '2023-04-14T22:00:00',
+                    }
+                ],
+
+                //活動點擊
+                // eventClick: function (info) {
+                //     //網址不導向
+                //     info.jsEvent.preventDefault();
+                //     if (info.event.url) {
+                //         window.open(info.event.url);
+                //     }
+                // },
+                //取消參加
+                eventClick: function (arg) {
+                    confirm('活動');
+                        // arg.event.remove()//删除事件
+                },
+            });
+            // 渲染
+            calendarjoin.render();
+        });
+            document.addEventListener('DOMContentLoaded', function () {
+            var calendarE3 = document.getElementById('calendarall');
+            var calendarall = new FullCalendar.Calendar(calendarE3, {
+                initialView: 'dayGridMonth',
+                // 語言
+                locale: 'zh-tw',
+                navLink: true,
+                eventLimit: true,
+                selectable: true,
+                // 依瀏覽器視窗變動
+                handleWindowResize: true,
+                // 顯示現在
+                nowIndicator: true,
+                // 按鈕
+                customButtons: {
+                    myhost: {
+                        text: '發起',
+                        click: function () {
+                            document.getElementById('calendarhost').style.display = 'block';
+                            document.getElementById('calendarjoin').style.display = 'none';
+                            document.getElementById('calendarall').style.display = 'none';
+                        }
+                    },
+                    myjoin: {
+                        text: '報名',
+                        click: function () {
+                            document.getElementById('calendarhost').style.display = 'none';
+                            document.getElementById('calendarjoin').style.display = 'block';
+                            document.getElementById('calendarall').style.display = 'none';
+                        }
+                    },
+                    all: {
+                        text: '全部',
+                        click: function () {
+                            document.getElementById('calendarhost').style.display = 'none';
+                            document.getElementById('calendarjoin').style.display = 'none';
+                            document.getElementById('calendarall').style.display = 'block';
+                        }
+                    }
+                },
+                    //上排選項
+                    headerToolbar: {
+                        left: 'myhost,myjoin,all',
+                        center: 'title',
+                        right: 'prev,next,today,dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    //活動
+
+                    eventColor: "red",
+                    events: [
+                        {
+                            id: "20230412",
+                            title: "testcalender",
+                            labelType: "myhost",
+                            start: '2023-04-09T08:00:00',
+                            end: '2023-04-09T10:00:00',
+                            color: "purple"
+                        },
+                        {
+                            id: "20230408",
+                            title: "testcalender2",
+                            labelType: "myjoin",
+                            start: '2023-04-10T12:00:00',
+                            end: '2023-04-10T14:00:00',
+                            color: "green"
+                        },
+                        {
+                            id: "333",
+                            title: "testcalender3",
+                            labelType: "myjoin",
+                            start: '2023-04-10T22:00:00',
+                            end: '2023-04-11T00:00:00',
+                        },
+                        {
+                            id: "888",
+                            title: "testcalender4",
+                            labelType: "myjoin",
+                            start: '2023-04-14T22:00:00',
+                        },
+                        {
+                            id: "all",
+                            title: "all",
+                            labelType: "myjoin",
+                            start: '2023-04-14T22:00:00',
+                        }
+                    ],
+
+                    //活動點擊
+                    // eventClick: function (info) {
+                    //     //網址不導向
+                    //     info.jsEvent.preventDefault();
+                    //     if (info.event.url) {
+                    //         window.open(info.event.url);
+                    //     }
+                    // },
+                    //取消參加
+                    eventClick: function (arg) {
+                        confirm('活動') 
+                            // arg.event.remove()//删除事件
+                }
+            });
+            // 渲染
+            calendarall.render();
+        });
+
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- 放入網頁 -->
+        <div id='calendarall'></div>
+        <div id='calendarhost' display="none"></div>
+        <div id='calendarjoin' display="none"></div>
+
+        
+    </div>
+</body>
+
+
+</html>
