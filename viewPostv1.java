@@ -18,7 +18,7 @@ import org.json.JSONWriter;
 /**
  * Servlet implementation class test4
  */
-@WebServlet("/test4")
+@WebServlet("/viewPostv1")
 public class viewPostv1 extends HttpServlet {
 	private static final String DB_URL = "jdbc:mysql://localhost:3306/eeit58group3";
 	private static final String DB_USER = "root";
