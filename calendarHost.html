@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+<meta charset='utf-8' />
+<!-- 連結檔案 -->
+<script
+	src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.5/index.global.min.js'></script>
+<script
+	src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.5/locales-all.global.min.js'></script>
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- 連結CSS -->
+<link rel="stylesheet" href="./css/calendarStyle.css">
+
+<!-- 需檢查member session .getID() -->
+<script>
+	document.addEventListener('DOMContentLoaded', async function getActivity() {
+	    //send session.getid()
+		const response = await $.ajax({
+	        type: "POST",
+	        url: "./viewcalendarHost",
+	        dataType: 'json',
+	        data: { "memberId": "2" },
+	      });
+		//get event array
+	      var event = response.map(activity => ({
+	        title: activity.activityTitle,
+	        start: activity.activityTime,
+	        extendedProps: {
+	          location: activity.location,
+	          fee: activity.fee,
+	          postTime: activity.postTime,
+	          contact: activity.contact,
+	          participation: activity.participation,
+	          description: activity.description,
+	          reservation: activity.reservation,
+	          id: activity.id
+	        }
+	      }));
+		//fullcalendar
+		var calendarEl = document.getElementById('calendarHost');
+		var calendarHost = new FullCalendar.Calendar(calendarEl, {
+			initialView : 'dayGridMonth',
+			// 語言
+			locale : 'zh-tw',
+			navLink : true,
+			eventLimit : true,
+			selectable : true,
+			// 依瀏覽器視窗變動
+			handleWindowResize : true,
+			// 顯示現在
+			nowIndicator : true,
+			//上排選項
+			headerToolbar : {
+				left : 'dayGridMonth,timeGridWeek,timeGridDay',
+				center : 'title',
+				right : 'today,prev,next'
+			},
+			//活動
+			events: event,
+			//活動點擊
+			eventClick:
+         		function(info) {
+         		    var reservation = "";
+         		    switch(info.event.extendedProps.reservation) {
+         		        case "1":
+         		            reservation = "未預約";
+         		            break;
+         		        case "2":
+         		            reservation = "已預約";
+         		            break;
+         		        default:
+         		            reservation = "尚未設定";
+         		            break;
+         		    }
+         		    Swal.fire({
+         		        title: "" + info.event.extendedProps.location +"",
+         		        html:  
+         		            "聯絡方式 : "+ info.event.extendedProps.contact+"<br>"+
+         		            "費用 : " + info.event.extendedProps.fee+"<br>"+
+         		            "發文時間 : " + info.event.extendedProps.postTime+"<br>"+
+         		            "加入人數 : " + info.event.extendedProps.participation+"<br>"+
+         		            "發文說明 : " + info.event.extendedProps.description+"<br>"+
+         		            "預約狀況 : " + reservation+"<br>",
+         		        showCloseButton: true,
+         		        showCancelButton: true,
+         		        showDenyButton: true, 
+         		        confirmButtonText: '取消我發起的活動',
+         		        denyButtonText: '更改預約狀況',
+         		        cancelButtonText: '關閉',
+         		        showLoaderOnConfirm: true,
+         		    }).then(function(result){
+         		    	if (result.isConfirmed){
+         		    		//刪除已發起的活動
+         		    		Swal.fire({
+         		    		text:'刪除活動',
+         		        	className:'btn btn-danger',
+         		        	preConfirm: function() {
+         		            return new Promise(function(resolve) {
+         		                $.ajax({
+         		                    type: "POST",
+         		                    url: "./deleteActivity",
+         		                    dataType: 'text',
+         		                    data: {
+         		                        memberId: "2", 
+         		                        //change to session.getID()
+         		                        id: info.event.extendedProps.id
+         		                    },
+         		                    success: function(response) {
+         		                        // 成功時取消活動
+         		                        console.log("success");
+         		                        console.log(response);
+         		                       Swal.fire({
+   		                                title: '成功刪除活動:'+info.event.title + "",
+   		                                icon: 'success',
+   		                                confirmButtonText: '關閉',
+   		                             	showCloseButton: true,
+   		                            })
+   		                            },
+         		                    error: function(error) {
+         		                    	console.log("error");
+         		                        console.log(error);
+         		                       	Swal.fire({
+    		                                title: '請再試一次或重整頁面',
+    		                                icon: 'error',
+    		                                confirmButtonText: '關閉',
+    		                                showCloseButton: true
+    		                            })
+         		                    }
+         		                });
+         		            });
+         		        }
+         		    		});
+         		    	}else if (result.isDenied){
+         		    			//更改為已預約
+             		    		Swal.fire({
+             		    		text:'更改預約狀況',
+             		        	className:'btn btn-primary',
+             		        	preConfirm: function() {
+             		            return new Promise(function(resolve) {
+             		                $.ajax({
+             		                    type: "POST",
+             		                    url: "./changeReservation",
+             		                    dataType: 'text',
+             		                    data: {
+             		                        memberId: "2", 
+             		                        //change to session.getID()
+             		                        id: info.event.extendedProps.id
+             		                    },
+             		                    success: function(response) {
+             		                        console.log("success");
+             		                        console.log(response);
+             		                       Swal.fire({
+       		                                title: '成功將活動:'+info.event.title +"更改為已預約",
+       		                                icon: 'success',
+       		                                confirmButtonText: '關閉',
+       		                             	showCloseButton: true
+       		                            })
+       		                            },
+             		                    error: function(error) {
+             		                    	console.log("error");
+             		                        console.log(error);
+             		                       	Swal.fire({
+        		                                title: '請再試一次或重整頁面',
+        		                                icon: 'error',
+        		                                confirmButtonText: '關閉',
+        		                                showCloseButton: true
+        		                            })
+             		                    }
+             		                });
+             		            });
+             		        }
+         		   			});
+         		    	}
+         		    })
+         		}
+			//eventclickend	 
+		});
+// 		console.log(event);
+		// 渲染
+		calendarHost.render();
+	});
+</script>
+</head>
+
+<body>
+	<div class="container">
+		<!-- 放入網頁 -->
+		<div id='calendarHost'></div>
+	</div>
+</body>
+</html>

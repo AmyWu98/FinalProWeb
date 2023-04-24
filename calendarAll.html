@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+<meta charset='utf-8' />
+<!-- 連結檔案 -->
+<script
+	src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.5/index.global.min.js'></script>
+<script
+	src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.5/locales-all.global.min.js'></script>
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- 連結CSS -->
+<link rel="stylesheet" href="./css/calendarStyle.css">
+
+<!-- 需檢查member session .getID() -->
+<script>
+	document.addEventListener('DOMContentLoaded', async function getActivity() {
+	    //send session.getid()
+		const response = await $.ajax({
+	        type: "POST",
+	        url: "./viewcalendarAll",
+	        dataType: 'json',
+	        data: { "memberId": "2" },
+	      });
+		//get event array
+	      var event = response.map(activity => ({
+	        title: activity.activityTitle,
+	        start: activity.activityTime,
+	        extendedProps: {
+	          location: activity.location,
+	          fee: activity.fee,
+	          contact: activity.contact,
+	          host: activity.memberName,
+	          id: activity.id,
+	          reservation:activity.reservation
+	        }
+	      }));
+		//fullcalendar
+		var calendarEl = document.getElementById('calendarAll');
+		var calendarAll = new FullCalendar.Calendar(calendarEl, {
+			initialView : 'dayGridMonth',
+			// 語言
+			locale : 'zh-tw',
+			navLink : true,
+			eventLimit : true,
+			selectable : true,
+			// 依瀏覽器視窗變動
+			handleWindowResize : true,
+			// 顯示現在
+			nowIndicator : true,
+			//上排選項
+			headerToolbar : {
+				left : 'dayGridMonth,timeGridWeek,timeGridDay',
+				center : 'title',
+				right : 'today,prev,next'
+			},
+			//活動
+			events: event,
+			//點擊
+            eventClick: 
+            	function(info){
+            	var reservation = "";
+                switch(info.event.extendedProps.reservation) {
+                    case "1":
+                        reservation = "未預約";
+                        break;
+                    case "2":
+                        reservation = "已預約";
+                        break;
+                    default:
+                        reservation = "尚未設定";
+                        break;
+                }
+            	Swal.fire({
+            	  title: "" + info.event.extendedProps.location +"",
+            	  html:
+            	 "聯絡方式 : "+ info.event.extendedProps.contact+"<br>"+
+                 "發起人 : " + info.event.extendedProps.host + "<br>" +
+                 "費用 : " + info.event.extendedProps.fee+ "<br>" +
+                 "預約狀況 :" + reservation,
+                 showCloseButton: true,
+                 showConfirmButton: false,
+                 showCancelButton: true,
+                 cancelButtonText:'關閉'
+            	})
+            	}	
+		});
+		// 渲染
+		calendarAll.render();
+	});
+</script>
+</head>
+
+<body>
+	<div class="container">
+		<!-- 放入網頁 -->
+		<div id='calendarAll'></div>
+	</div>
+</body>
+</html>
